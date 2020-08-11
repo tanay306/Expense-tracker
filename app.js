@@ -3,6 +3,8 @@ const bodyParser= require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 const _ = require("lodash");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 const A = [];
 var totalamount = 0;
 
@@ -41,20 +43,22 @@ app.get("/signin", function (req, res) {
 
 
 app.post("/signup", function (req, res) {
-  const newperson = new Person ({
-    name: req.body.name,
-    username: req.body.username,
-    password: req.body.password
-  });
-  newperson.save(function (err) {
-    if (err) {
-      console.log(err);
-    } else {
-      res.redirect("/userHome")
-      console.log(newperson);
-      A.push(newperson.name)
-    }
-  });
+  bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
+    const newperson = new Person ({
+      name: req.body.name,
+      username: req.body.username,
+      password: hash
+    });
+    newperson.save(function (err) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.redirect("/userHome")
+        console.log(newperson);
+        A.push(newperson.name)
+      }
+    });
+  })
 });
 
 app.post("/signin", function (req, res) {
@@ -66,13 +70,15 @@ app.post("/signin", function (req, res) {
       console.log(err);
     } else {
       if (foundUser) {
-        if (foundUser.password === password){
-          res.redirect("/userHome")
-          A.push(foundUser.name)
-          console.log("found");
-        } else {
-          res.send("<h>Username and password not found</h>")
-        }
+        bcrypt.compare(password, foundUser.password, function(err, result) {
+          if (result === true) {
+            res.redirect("/userHome");
+            A.push(foundUser.name);
+            console.log("found");
+          } else {
+            res.send("<h>Username and password not found</h>");
+          }
+        });
       }
     }
   });
