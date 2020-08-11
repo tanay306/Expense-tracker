@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/index.css">
+  </head>
+  <body>
+    <div class="conatainer" id="body">
+      <!-- Navbar -->
+      <nav class="navbar navbar-light bg-dark" style="height: 80px">
+        <a class="navbar-brand" style="margin-left: 5%; font-size: 30px; font-family: cursive; color: blanchedalmond;" href="/">ExpenseTracker.com</a>
+        <form class="form-inline" style="margin-right: 3%;">
+          <button class="btn" type="submit" style="color: wheat;"><a href="/userHome">Home</a></button>
+          <button class="btn" type="submit" style="color: wheat;"><a href="/myExpenses">My Expenses</a></button>
+          <button class="btn" type="submit" style="color: wheat;"><a href="/">Log Out</a></button>
+        </form>
+      </nav>
+    </div>
+
+    <!-- Jumbotron -->
+    <div class="jumbotron jumbotron-fluid" id="jumbo2">
+      <h1 style="color: wheat; text-align: center; font-family: cursive;">Welcome <%= Name %></h1>
+      <br>
+      <h3 style="color: wheat; text-align: center; font-family: cursive;">Add any expense</h3>
+    </div>
+
+    <!-- form -->
+    <div class="row" id="row1">
+      <div class="col-sm-12">
+        <form action="/userHome" method="POST">
+          <div class="form-group">
+            <label style="color: whitesmoke;">Amount</label>
+            <input type="number" class="form-control" name="amount" required>
+          </div>
+          <div class="form-group">
+            <label style="color: whitesmoke;">Category</label>
+            <input type="text" class="form-control" name="category" required>
+          </div>
+          <div class="form-group">
+            <label style="color: whitesmoke;">Description</label>
+            <input type="text" class="form-control" name="description" required>
+          </div>
+            <button type="submit" class="btn btn-light">Add</button>
+        </form>
+      </div>
+    </div>
+
+  </body>
+</html>
