@@ -28,166 +28,41 @@ if (process.env.NODE_ENV === 'development') {
 
 setUpDb();
 
-app.get('/', async (req, res) => {
-    try {
-        res.render('index');
-    } catch(err) {
-        console.log(err);
-        res.json(err)
-    } 
-});
+const {
+    getHome,
+    getSignIn,
+    getSignUp,
+    postSignIn,
+    postSignUp,
+    signOut,
+} = require('./controllers/users');
 
-app.get('/signup', async (req, res) => {
-    try {
-        res.render('signup')
-    } catch(err) {
-        console.log(err);
-        res.json(err)
-    } 
-});
+const {
+    getUserHome,
+    postUserHome,
+    getMyExpenses,
+} = require('./controllers/expenses');
 
-app.post('/signup', async (req, res) => {
-    try {
-        const {name, email, password} = req.body;
-        console.log(name, email, password);
-        if (!email || !password) {
-            return res.status(400).send({'message': 'Some values are missing'});
-          }
-          if (!Helper.isValidEmail(email)) {
-            return res.status(400).send({ 'message': 'Please enter a valid email address' });
-          }
-          const hashPassword = Helper.hashPassword(password);
-          const userExists = await User.query().where('email', '=', email);
-          if(userExists.length==0) {
-              const user = await User.query().insert({
-                  name: name,
-                  email: email,
-                  password: hashPassword,
-              });
-              if(user) {
-                const token = Helper.generateToken(user.id);
-                res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
-                return res.redirect('/userHome');
-              } else {
-                return res.status(400).send({ 'message': 'Some err occured' })
-              }
-          } else {
-            return res.status(400).send({ 'message': 'User with that EMAIL already exist' })
-          }
-    } catch(err) {
-        console.log(err);
-        res.json(err)
-    } 
-});
+app.route('/')
+    .get(getHome);
 
-app.get('/signin', async (req, res) => {
-    try {
-        res.render('signin')
-    } catch(err) {
-        console.log(err);
-        res.json(err)
-    } 
-});
+app.route('/signin')
+    .get(getSignIn)
+    .post(postSignIn);
 
-app.post('/signin', async (req, res) => {
-    try {
-        const {email, password} = req.body;
-        if (!email || !password) {
-            return res.status(400).send({'message': 'Some values are missing'});
-        }
-        const userExists = await User.query().where('email', '=', email);
-        if(userExists.length == 1) {
-            if(Helper.comparePassword(userExists[0].password, password)) {
-                const token = Helper.generateToken(userExists[0].id);
-                console.log('Signed In');
-                res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
-                res.redirect('/userHome');
-            } else {
-                return res.status(400).send({ 'message': 'Incorrect Credentials' }) 
-            }
-        } else {
-            return res.status(400).send({ 'message': 'No user with that EMAIL exists' })
-        }
-    } catch(err) {
-        console.log(err);
-        res.json(err)
-    }  
-});
+app.route('/signup')
+    .get(getSignUp)
+    .post(postSignUp)
 
-app.get('/userHome', async (req, res) => {
-    try {
-        if(req.cookies) {
-            const token = req.cookies.nToken;
-            const userId = Helper.decodeToken(token)
-            const user = await User.query().findById(userId);
-            res.render('userHome', {Name: user.name})
-        } else {
-            console.log('noo');
-        }
-    } catch(err) {
-        console.log(err);
-        res.json(err)
-    }  
-});
+app.route('/userHome')
+    .get(getUserHome)
+    .post(postUserHome);
 
-app.post('/userHome', async (req, res) => {
-    try {
-        if(req.cookies) {
-            const token = req.cookies.nToken;
-            const userId = Helper.decodeToken(token)
-            const user = await User.query().findById(userId);
-            const {amount, category, description} = req.body;
-            if(!amount) {
-                return res.status(400).send({'message': 'Add some amount'});
-            }
-            const expense = await Expense.query().insert({
-                userId: userId,
-                amount: amount,
-                category: category || null,
-                description: description || null,
-            });
-            if(expense) {
-                console.log(expense);
-                res.render('userHome', {Name: user.name});
-            }        
-        } else {
-            console.log('noo');
-        }
-    } catch(err) {
-        console.log(err);
-        res.json(err)
-    }  
-});
+app.route('/myExpenses')
+    .get(getMyExpenses);
 
-app.get('/myExpenses', async (req, res) => {
-    try {
-        if(req.cookies) {
-            let sum=0;
-            const token = req.cookies.nToken;
-            const userId = Helper.decodeToken(token)
-            const user = await User.query().findById(userId);
-            const expenses = await Expense.query().where('userId', '=', userId);
-            const expenseColumn = await Expense.query().where('userId', '=', userId).select(['amount'])
-            expenseColumn.forEach((i)=>sum+=i.amount)
-            res.render('myExpenses', {foundExpenses: expenses, total:sum})
-        }
-    } catch(err) {
-        console.log(err);
-        res.json(err)
-    } 
-});
-
-app.get('/signout', async (req, res) => {
-    try {
-        if(req.cookies) {
-            res.clearCookie('nToken');
-            res.redirect('/')
-        }
-    } catch(err) {
-        console.log(err);
-        res.json(err)
-    } 
-});
+app.route('/signout')
+    .get(signOut)
 
 const PORT = process.env.PORT || 8080;
 
