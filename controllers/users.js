@@ -6,7 +6,7 @@ const verify = require('../middleware/auth');
 
 const getHome = async (req, res) => {
     try {
-        res.render('index');
+        res.status(200).render('index');
     } catch(err) {
         console.log(err);
         res.status(400).render('error', {'message': 'Some error occured while loading the page!' })
@@ -15,7 +15,7 @@ const getHome = async (req, res) => {
 
 const getSignUp = async (req, res) => {
     try {
-        res.status(200).render('signup')
+        res.status(200).render('signup', {message: null, status:false})
     } catch(err) {
         console.log(err);
         res.status(400).render('error', {'message': 'Some error occured while loading the page!' })
@@ -25,12 +25,11 @@ const getSignUp = async (req, res) => {
 const postSignUp = async (req, res) => {
     try {
         const {name, email, password} = req.body;
-        console.log(name, email, password);
         if (!email || !password) {
-            res.status(400).render('error', {'message': 'Some values are missing!'});
+            res.status(400).render('signup', {messgae: 'Some values are missing!', status: true})
           }
           if (!Helper.isValidEmail(email)) {
-            res.status(400).render('error', {'message': 'Please enter a valid email address!'});
+            res.status(400).render('signup', {messgae: 'Please enter a valid email address!', status: true})
           }
           const hashPassword = Helper.hashPassword(password);
           const userExists = await User.query().where('email', '=', email);
@@ -43,22 +42,22 @@ const postSignUp = async (req, res) => {
               if(user) {
                 const token = Helper.generateToken(user.id);
                 res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
-                return res.status(200).redirect('/userHome');
+                res.status(200).render('userHome', {Name: user.name, message: null, status:false})
               } else {
                 res.status(400).render('error', {'message': 'User not saved. Please try again later!'});
               }
           } else {
-            res.status(400).render('error', {'message': 'User with that EMAIL already exists!' })
+            res.status(400).render('signup', {message: 'User with that EMAIL already exists!', status: true})
           }
     } catch(err) {
         console.log(err);
-        res.status(400).render('error', {'message': 'Some error occured while loading the page!' })
+        res.render('error', {'message': 'Some error occured while loading the page!' })
     } 
 };
 
 const getSignIn = async (req, res) => {
     try {
-        res.status(200).render('signin')
+        res.status(200).render('signin', {message: null, status:false})
     } catch(err) {
         console.log(err);
         res.status(400).render('error', {'message': 'Some error occured while loading the page!' })
@@ -69,7 +68,7 @@ const postSignIn = async (req, res) => {
     try {
         const {email, password} = req.body;
         if (!email || !password) {
-            res.status(400).render('error',{'message': 'Some values are missing!'});
+            res.status(400).render('signin', {message: 'Some values are missing!', 'status': true})
         }
         const userExists = await User.query().where('email', '=', email);
         if(userExists.length == 1) {
@@ -77,12 +76,12 @@ const postSignIn = async (req, res) => {
                 const token = Helper.generateToken(userExists[0].id);
                 console.log('Signed In');
                 res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
-                res.status(200).redirect('/userHome');
+                res.status(200).render('userHome', {Name: userExists[0].name, message: null, status:false})
             } else {
-                res.status(400).render('error', { 'message': 'Incorrect Password!' }) 
+                res.status(400).render('signin', {message: 'Incorrect Password!', status: true})
             }
         } else {
-            res.status(400).render('error', { 'message': 'No user with that EMAIL exists!' })
+            res.status(400).render('signin', {message: 'No user with that EMAIL exists!', status: true})
         }
     } catch(err) {
         console.log(err);
@@ -105,7 +104,7 @@ const signOut = async (req, res) => {
         }
     } catch(err) {
         console.log(err);
-        res.status(400).render('error', {'message': 'Some error occured while loading the page!' })
+        resres.status(400).render('error', {'message': 'Some error occured while loading the page!' })
     } 
 };
 

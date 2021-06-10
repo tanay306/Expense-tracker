@@ -11,7 +11,7 @@ const getUserHome = async (req, res) => {
             if(token) {
                 const userId = Helper.decodeToken(token)
                 const user = await User.query().findById(userId);
-                res.status(200).render('userHome', {Name: user.name})
+                res.status(200).render('userHome', {Name: user.name, message: null, status:false})
             } else {
                 res.status(400).render('error', { 'message': 'Please log in!' })
             }
@@ -42,8 +42,7 @@ const postUserHome = async (req, res) => {
                     description: description || null,
                 });
                 if(expense) {
-                    console.log(expense);
-                    res.render('userHome', {Name: user.name});
+                    res.status(200).render('userHome', {Name: user.name, message: 'Expense added successfully', status: true});
                 } else {
                     res.status(400).render('error', { 'message': 'Expense not processes! Please try again later!' })
                 }
@@ -70,7 +69,7 @@ const getMyExpenses = async (req, res) => {
                 const expenses = await Expense.query().where('userId', '=', userId);
                 const expenseColumn = await Expense.query().where('userId', '=', userId).select(['amount'])
                 expenseColumn.forEach((i)=>sum+=i.amount)
-                res.render('myExpenses', {foundExpenses: expenses, total:sum})
+                res.status(200).render('myExpenses', {foundExpenses: expenses, total:sum})
             } else {
                 res.status(400).render('error', { 'message': 'Please log in!' })
             }

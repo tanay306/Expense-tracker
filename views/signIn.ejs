@@ -18,6 +18,15 @@
           </form>
         </nav>
 
+        <% if(status=true && message) { %>
+          <div class="alert bg-danger">
+              <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+              <% if(message) { %>
+                <strong>Error: </strong><%= message %>
+              <% } %>
+          </div>
+        <% } %>
+
         <div class="row" id="row">
             <div class="col-sm-12">
                   <!-- Makes POST request to /login route -->

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In</title>
+    <title>Sign Up</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="css/index.css">
 </head>
@@ -17,6 +17,15 @@
             <button class="btn" type="submit" style="color: wheat;"><a href="/signup">Sign Up</a></button>
           </form>
         </nav>
+
+        <% if(status=true && message) { %>
+          <div class="alert bg-danger">
+              <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+              <% if(message) { %>
+                <strong>Error: </strong><%= message %>
+              <% } %>
+          </div>
+        <% } %>
 
         <!-- Forms -->
         <div class="row" id="row">

@@ -19,6 +19,15 @@
       </nav>
     </div>
 
+    <% if(status=true && message) { %>
+      <div class="alert bg-success">
+          <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+          <% if(message) { %>
+            <strong>Success: </strong><%= message %>
+          <% } %>
+      </div>
+    <% } %>
+
     <!-- Jumbotron -->
     <div class="jumbotron jumbotron-fluid" id="jumbo2">
       <h1 style="color: wheat; text-align: center; font-family: cursive;">Welcome <%= Name %></h1>

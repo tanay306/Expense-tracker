@@ -1,24 +1,44 @@
-#jumbo{
-    margin-top: 10%;
-    background-image: linear-gradient(to right, #434343 0%, black 100%);
+#jumbo {
+  margin-top: 10%;
+  background-image: linear-gradient(to right, #434343 0%, black 100%);
 }
 
-body{
-    background-image: linear-gradient(to right, #434343 0%, black 100%);
+body {
+  background-image: linear-gradient(to right, #434343 0%, black 100%);
 }
-#row{
-   margin: 10%;
-   width: 80%;
+#row {
+  margin: 10%;
+  width: 80%;
 }
-#jumbo2{
-    background-image: linear-gradient(to right, #434343 0%, black 100%);
+#jumbo2 {
+  background-image: linear-gradient(to right, #434343 0%, black 100%);
 }
-#row1{
-    margin-left: 10%;
-    margin-right: 10%;
+#row1 {
+  margin-left: 10%;
+  margin-right: 10%;
 }
 
-.tab{
-    margin-left: 10%;
-    margin-right: 10%;
+.tab {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.alert {
+  padding: 20px;
+  color: white;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
 }
