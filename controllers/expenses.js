@@ -8,45 +8,55 @@ const getUserHome = async (req, res) => {
     try {
         if(req.cookies) {
             const token = req.cookies.nToken;
-            const userId = Helper.decodeToken(token)
-            const user = await User.query().findById(userId);
-            res.render('userHome', {Name: user.name})
+            if(token) {
+                const userId = Helper.decodeToken(token)
+                const user = await User.query().findById(userId);
+                res.status(200).render('userHome', {Name: user.name})
+            } else {
+                res.status(400).render('error', { 'message': 'Please log in!' })
+            }
         } else {
-            console.log('noo');
+            res.status(400).render('error', { 'message': 'No Cookie Found!' })
         }
     } catch(err) {
         console.log(err);
-        res.json(err)
-    }  
+        res.status(400).render('error', {'message': 'Some error occured while loading the page!' })
+    } 
 };
 
 const postUserHome = async (req, res) => {
     try {
         if(req.cookies) {
             const token = req.cookies.nToken;
-            const userId = Helper.decodeToken(token)
-            const user = await User.query().findById(userId);
-            const {amount, category, description} = req.body;
-            if(!amount) {
-                return res.status(400).send({'message': 'Add some amount'});
+            if(token) {
+                const userId = Helper.decodeToken(token)
+                const user = await User.query().findById(userId);
+                const {amount, category, description} = req.body;
+                if(!amount) {
+                    return res.status(400).send({'message': 'Add some amount'});
+                }
+                const expense = await Expense.query().insert({
+                    userId: userId,
+                    amount: amount,
+                    category: category || null,
+                    description: description || null,
+                });
+                if(expense) {
+                    console.log(expense);
+                    res.render('userHome', {Name: user.name});
+                } else {
+                    res.status(400).render('error', { 'message': 'Expense not processes! Please try again later!' })
+                }
+            } else {
+                res.status(400).render('error', { 'message': 'Please log in!' })
             }
-            const expense = await Expense.query().insert({
-                userId: userId,
-                amount: amount,
-                category: category || null,
-                description: description || null,
-            });
-            if(expense) {
-                console.log(expense);
-                res.render('userHome', {Name: user.name});
-            }        
         } else {
-            console.log('noo');
+            res.status(400).render('error', { 'message': 'No Cookie Found!' })
         }
     } catch(err) {
         console.log(err);
-        res.json(err)
-    }  
+        res.status(400).render('error', {'message': 'Some error occured while loading the page!' })
+    } 
 }
 
 const getMyExpenses = async (req, res) => {
@@ -54,16 +64,22 @@ const getMyExpenses = async (req, res) => {
         if(req.cookies) {
             let sum=0;
             const token = req.cookies.nToken;
-            const userId = Helper.decodeToken(token)
-            const user = await User.query().findById(userId);
-            const expenses = await Expense.query().where('userId', '=', userId);
-            const expenseColumn = await Expense.query().where('userId', '=', userId).select(['amount'])
-            expenseColumn.forEach((i)=>sum+=i.amount)
-            res.render('myExpenses', {foundExpenses: expenses, total:sum})
+            if(token) {
+                const userId = Helper.decodeToken(token)
+                const user = await User.query().findById(userId);
+                const expenses = await Expense.query().where('userId', '=', userId);
+                const expenseColumn = await Expense.query().where('userId', '=', userId).select(['amount'])
+                expenseColumn.forEach((i)=>sum+=i.amount)
+                res.render('myExpenses', {foundExpenses: expenses, total:sum})
+            } else {
+                res.status(400).render('error', { 'message': 'Please log in!' })
+            }
+        } else {
+            res.status(400).render('error', { 'message': 'No Cookie Found!' })
         }
     } catch(err) {
         console.log(err);
-        res.json(err)
+        res.status(400).render('error', {'message': 'Some error occured while loading the page!' })
     } 
 };
 
