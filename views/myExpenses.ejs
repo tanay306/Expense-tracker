@@ -39,8 +39,16 @@
                 <% foundExpenses.forEach(function(elem){ %>
                     <tr>
                         <td><%= elem.amount %></td>
-                        <td><%= elem.category %></td>
-                        <td><%= elem.description %></td>
+                        <% if (elem.category==null) { %>
+                          <td>---</td>
+                        <% } else { %>
+                          <td><%= elem.category %></td>
+                        <% } %>
+                        <% if (elem.description==null) { %>
+                          <td>---</td>
+                        <% } else { %>
+                          <td><%= elem.description %></td>
+                        <% } %>
                       </tr>
                 <% }) %>
             </tbody>
