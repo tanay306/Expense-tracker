@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
 const User = require('../db/models/users');
-require('dotenv').config()
+require('dotenv').config();
 
 const verify = asyncHandler(async (req, res, next) => {
   if (

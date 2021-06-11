@@ -19,4 +19,4 @@ class Expense extends Model {
     }
 }
 
-module.exports = Expense
+module.exports = Expense;

@@ -7,7 +7,7 @@ const ejs = require("ejs");
 const cookieParser = require('cookie-parser');
 
 const User = require('./db/models/users');
-const Expense = require('./db/models/expenses')
+const Expense = require('./db/models/expenses');
 const Helper = require('./middleware/helpers');
 const {verify} = require('./middleware/auth');
 
@@ -32,7 +32,7 @@ app.use(function (req, res, next) {
 
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
-}
+};
 
 setUpDb();
 
@@ -43,6 +43,7 @@ const {
     postSignIn,
     postSignUp,
     signOut,
+    error,
 } = require('./controllers/users');
 
 const {
@@ -70,7 +71,10 @@ app.route('/myExpenses')
     .get(getMyExpenses);
 
 app.route('/signout')
-    .get(signOut)
+    .get(signOut);
+
+app.route('/error')
+    .get(error);
 
 const PORT = process.env.PORT || 8080;
 

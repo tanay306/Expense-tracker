@@ -9,18 +9,18 @@ const getUserHome = async (req, res) => {
         if(req.cookies) {
             const token = req.cookies.nToken;
             if(token) {
-                const userId = Helper.decodeToken(token)
+                const userId = Helper.decodeToken(token);
                 const user = await User.query().findById(userId);
-                res.status(200).render('userHome', {Name: user.name, message: null, status:false})
+                res.status(200).render('userHome', {Name: user.name, message: null, status:false});
             } else {
-                res.status(400).render('error', { 'message': 'Please log in!' })
+                res.status(400).render('error', { 'message': 'Please log in!' });
             }
         } else {
-            res.status(400).render('error', { 'message': 'No Cookie Found!' })
+            res.status(400).render('error', { 'message': 'No Cookie Found!' });
         }
     } catch(err) {
         console.log(err);
-        res.status(400).render('error', {'message': 'Some error occured while loading the page!' })
+        res.status(400).render('error', {'message': 'Some error occured while loading the page!' });
     } 
 };
 
@@ -29,7 +29,7 @@ const postUserHome = async (req, res) => {
         if(req.cookies) {
             const token = req.cookies.nToken;
             if(token) {
-                const userId = Helper.decodeToken(token)
+                const userId = Helper.decodeToken(token);
                 const user = await User.query().findById(userId);
                 const {amount, category, description} = req.body;
                 if(!amount) {
@@ -44,19 +44,19 @@ const postUserHome = async (req, res) => {
                 if(expense) {
                     res.status(200).render('userHome', {Name: user.name, message: 'Expense added successfully', status: true});
                 } else {
-                    res.status(400).render('error', { 'message': 'Expense not processes! Please try again later!' })
+                    res.status(400).render('error', { 'message': 'Expense not processes! Please try again later!' });
                 }
             } else {
-                res.status(400).render('error', { 'message': 'Please log in!' })
+                res.status(400).render('error', { 'message': 'Please log in!' });
             }
         } else {
-            res.status(400).render('error', { 'message': 'No Cookie Found!' })
+            res.status(400).render('error', { 'message': 'No Cookie Found!' });
         }
     } catch(err) {
         console.log(err);
-        res.status(400).render('error', {'message': 'Some error occured while loading the page!' })
+        res.status(400).render('error', {'message': 'Some error occured while loading the page!' });
     } 
-}
+};
 
 const getMyExpenses = async (req, res) => {
     try {
@@ -64,21 +64,21 @@ const getMyExpenses = async (req, res) => {
             let sum=0;
             const token = req.cookies.nToken;
             if(token) {
-                const userId = Helper.decodeToken(token)
+                const userId = Helper.decodeToken(token);
                 const user = await User.query().findById(userId);
                 const expenses = await Expense.query().where('userId', '=', userId);
-                const expenseColumn = await Expense.query().where('userId', '=', userId).select(['amount'])
-                expenseColumn.forEach((i)=>sum+=i.amount)
-                res.status(200).render('myExpenses', {foundExpenses: expenses, total:sum})
+                const expenseColumn = await Expense.query().where('userId', '=', userId).select(['amount']);
+                expenseColumn.forEach((i)=>sum+=i.amount);
+                res.status(200).render('myExpenses', {foundExpenses: expenses, total:sum});
             } else {
-                res.status(400).render('error', { 'message': 'Please log in!' })
+                res.status(400).render('error', { 'message': 'Please log in!' });
             }
         } else {
-            res.status(400).render('error', { 'message': 'No Cookie Found!' })
+            res.status(400).render('error', { 'message': 'No Cookie Found!' });
         }
     } catch(err) {
         console.log(err);
-        res.status(400).render('error', {'message': 'Some error occured while loading the page!' })
+        res.status(400).render('error', {'message': 'Some error occured while loading the page!' });
     } 
 };
 
@@ -86,4 +86,4 @@ module.exports = {
     getUserHome,
     postUserHome,
     getMyExpenses,
-}
+};
